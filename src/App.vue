@@ -2,11 +2,7 @@
   <v-app>
     <v-navigation-drawer fixed app v-model="sideNav">
       <v-list>
-        <v-list-tile
-          v-for="menuItem in menuItems"
-          :key="menuItem.title"
-          @click="$router.push(`${menuItem.path}`)"
-        >
+        <v-list-tile v-for="menuItem in menuItems" :key="menuItem.title" :to="menuItem.path">
           <v-list-tile-action>
             <v-icon>{{menuItem.icon}}</v-icon>
           </v-list-tile-action>
@@ -16,10 +12,12 @@
     </v-navigation-drawer>
     <v-toolbar dark class="primary">
       <v-toolbar-side-icon @click.stop="sideNav = !sideNav" class="hidden-sm-and-up"></v-toolbar-side-icon>
-      <v-toolbar-title @click="$router.push('/')">Dev Meetup</v-toolbar-title>
+      <v-toolbar-title>
+        <router-link to="/" tag="span" style="cursor: pointer">Dev Meetup</router-link>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only" v-for="menuItem in menuItems" :key="menuItem.title">
-        <v-btn flat @click="$router.push(`${menuItem.path}`)">
+        <v-btn flat :to="menuItem.path">
           <v-icon left dark>{{menuItem.icon}}</v-icon>
           {{menuItem.title}}
         </v-btn>
@@ -46,7 +44,7 @@ export default {
         {
           icon: 'room',
           title: 'Organize Meetup',
-          path: '/meetups/new'
+          path: '/new-meetup'
         },
         {
           icon: 'person',
