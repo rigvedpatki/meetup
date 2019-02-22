@@ -12,7 +12,7 @@
                 <v-card-title primary-title>
                   <div>
                     <div class="white--text mb-0 display-1">{{meetup.title}}</div>
-                    <div>{{meetup.date.toLocaleString()}}</div>
+                    <div>{{meetup.date | date}}</div>
                   </div>
                 </v-card-title>
                 <v-card-actions>

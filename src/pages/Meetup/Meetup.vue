@@ -8,8 +8,8 @@
           </v-card-title>
           <v-img :src="`${meetup.imageUrl}`" height="400px"></v-img>
           <v-card-text>
-            <div class="info--text">{{ meetup.date.toLocaleString()}} -- Place</div>
-            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab nobis tenetur quasi. Quia reiciendis perspiciatis, vero aperiam, omnis sed laudantium itaque molestiae incidunt fugiat sunt, accusantium assumenda recusandae repellendus possimus!</div>
+            <div class="info--text">{{ meetup.date | date}} -- {{meetup.location}}</div>
+            <div>{{meetup.description}}</div>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>

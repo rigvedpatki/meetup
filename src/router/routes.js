@@ -1,4 +1,5 @@
 import Home from '../pages/Home.vue'
+import ErrorPage from '../pages/Error.vue'
 import Meetups from '../pages/Meetup/Meetups.vue'
 import Meetup from '../pages/Meetup/Meetup.vue'
 import CreateMeetup from '../pages/Meetup/CreateMeetup.vue'
@@ -41,5 +42,10 @@ export const routes = [
     path: '/sign-up',
     name: 'sign-up',
     component: SignUp
+  },
+  {
+    path: '*',
+    name: 'error',
+    component: ErrorPage
   }
 ]
