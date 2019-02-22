@@ -134,6 +134,7 @@ export default {
           description: this.description,
           date: this.submittableDateTime
         }
+        console.log(meetup)
         this.$store.dispatch('createMeetup', meetup)
 
         this.$router.push('/meetups')

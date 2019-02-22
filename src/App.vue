@@ -8,6 +8,12 @@
           </v-list-tile-action>
           <v-list-tile-content>{{menuItem.title}}</v-list-tile-content>
         </v-list-tile>
+        <v-list-tile flat v-if="userIsAuthenticated" @click="onLogout">
+          <v-list-tile-action>
+            <v-icon>exit_to_app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>Logout</v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar dark class="primary">
@@ -16,10 +22,13 @@
         <router-link to="/" tag="span" style="cursor: pointer">Dev Meetup</router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only" v-for="menuItem in menuItems" :key="menuItem.title">
-        <v-btn flat :to="menuItem.path">
+      <v-toolbar-items class="hidden-xs-only">
+        <v-btn flat v-for="menuItem in menuItems" :key="menuItem.title" :to="menuItem.path">
           <v-icon left dark>{{menuItem.icon}}</v-icon>
           {{menuItem.title}}
+        </v-btn>
+        <v-btn flat v-if="userIsAuthenticated" @click="onLogout">
+          <v-icon left dark>exit_to_app</v-icon>Logout
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
@@ -34,23 +43,12 @@ export default {
   name: 'App',
   data() {
     return {
-      sideNav: false,
-      menuItems: [
-        {
-          icon: 'supervisor_account',
-          title: 'View Meetups',
-          path: '/meetups'
-        },
-        {
-          icon: 'room',
-          title: 'Organize Meetup',
-          path: '/new-meetup'
-        },
-        {
-          icon: 'person',
-          title: 'Profile',
-          path: '/profile'
-        },
+      sideNav: false
+    }
+  },
+  computed: {
+    menuItems() {
+      let menuItems = [
         {
           icon: 'face',
           title: 'Sign up',
@@ -62,7 +60,78 @@ export default {
           path: '/sign-in'
         }
       ]
+      if (this.userIsAuthenticated) {
+        menuItems = [
+          {
+            icon: 'supervisor_account',
+            title: 'View Meetups',
+            path: '/meetups'
+          },
+          {
+            icon: 'room',
+            title: 'Organize Meetup',
+            path: '/new-meetup'
+          },
+          {
+            icon: 'person',
+            title: 'Profile',
+            path: '/profile'
+          }
+        ]
+      }
+
+      return menuItems
+    },
+    userIsAuthenticated() {
+      return (
+        this.$store.getters.user !== null &&
+        this.$store.getters.user !== undefined
+      )
+    }
+  },
+  methods: {
+    onLogout() {
+      this.$store.dispatch('logout')
     }
   }
 }
 </script>
+
+<style>
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

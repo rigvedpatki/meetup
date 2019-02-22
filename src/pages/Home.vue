@@ -8,7 +8,12 @@
         <v-btn large to="/new-meetup" class="info">Organize Meetups</v-btn>
       </v-flex>
     </v-layout>
-    <v-layout row wrap class="mt-2">
+    <v-layout>
+      <v-flex xs12 class="text-xs-center">
+        <v-progress-circular indeterminate color="primary" :width="7" :size="70" v-if="loading"></v-progress-circular>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap class="mt-2" v-if="!loading">
       <v-flex xs12>
         <v-carousel style="cursor: pointer">
           <v-carousel-item
@@ -35,7 +40,8 @@ export default {
   name: 'HomePage',
   computed: {
     ...mapGetters({
-      meetups: 'featuredMeetups'
+      meetups: 'featuredMeetups',
+      loading: 'loading'
     })
   },
   methods: {

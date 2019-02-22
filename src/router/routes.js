@@ -7,6 +7,8 @@ import Profile from '../pages/User/Profile.vue'
 import SignIn from '../pages/User/SignIn.vue'
 import SignUp from '../pages/User/SignUp.vue'
 
+import authGaurd from './auth-gaurd'
+
 export const routes = [
   {
     path: '/',
@@ -21,7 +23,8 @@ export const routes = [
   {
     path: '/new-meetup',
     name: 'create-meetup',
-    component: CreateMeetup
+    component: CreateMeetup,
+    beforeEnter: authGaurd
   },
   {
     path: '/meetups/:id',
@@ -31,7 +34,8 @@ export const routes = [
   {
     path: '/profile',
     name: 'profile',
-    component: Profile
+    component: Profile,
+    beforeEnter: authGaurd
   },
   {
     path: '/sign-in',
