@@ -110,7 +110,8 @@ export default {
         commit('setLoading', false)
         const newUser = {
           id: user.user.uid,
-          registeredMeetups: []
+          registeredMeetups: [],
+          fbKeys: {}
         }
         commit('setUser', newUser)
       })
@@ -132,7 +133,8 @@ export default {
         //ToDo: Register for meetups
         const newUser = {
           id: user.user.uid,
-          registeredMeetups: []
+          registeredMeetups: [],
+          fbKeys: {}
         }
         commit('setUser', newUser)
       })
@@ -148,7 +150,32 @@ export default {
   },
   // Auto sign in
   autoSignIn({ commit }, payload) {
-    commit('setUser', { id: payload.uid, registeredMeetups: [] })
+    commit('setUser', { id: payload.uid, registeredMeetups: [], fbKeys: {} })
+  },
+  //fetch user data
+  fetchUserData({ commit, getters }, payload) {
+    commit('setLoading', true)
+    firebase
+      .database()
+      .ref(`/users/${getters.user.id}/registrations`)
+      .once('value')
+      .then(data => {
+        const dataPairs = data.val()
+        let registeredMeetups = []
+        let fbKeys = {}
+        for (const key in dataPairs) {
+          registeredMeetups.push(dataPairs[key])
+          fbKeys[dataPairs[key]] = key
+        }
+        const updatedUser = {
+          id: getters.user.id,
+          registeredMeetups,
+          fbKeys
+        }
+
+        commit('setUser', updatedUser)
+      })
+      .catch(error => console.error(error))
   },
   // Logout from firebase
   logout({ commit }) {
@@ -158,5 +185,54 @@ export default {
   // setting error
   setError({ commit }, payload) {
     commit('setError', payload)
+  },
+  // Register user for a Meetup
+  registerUserForMeetup({ commit, getters }, payload) {
+    commit('setLoading', true)
+    const user = getters.user
+    firebase
+      .database()
+      .ref(`/users/${user.id}`)
+      .child('/registrations/')
+      .push(payload)
+      .then(data => {
+        commit('setLoading', false)
+        commit('registerUserForMeetup', { id: payload, fbKey: data.key })
+      })
+      .catch(error => {
+        console.error(error)
+        commit('setLoading', false)
+      })
+  },
+  // Unregister user for a Meetup
+  unRegisterUserFromMeetup({ commit, getters }, payload) {
+    commit('setLoading', true)
+    const user = getters.user
+    if (!user.fbKeys) {
+      return
+    }
+    const fbKey = user.fbKeys[payload]
+
+    console.log(
+      'fbKey',
+      fbKey,
+      '\npayload',
+      payload,
+      '\npath',
+      `/users/${user.id}/registrations/${fbKey}`
+    )
+    firebase
+      .database()
+      .ref(`/users/${user.id}/registrations/${fbKey}`)
+      .remove()
+      .then(snapshot => {
+        console.log('snapshot', snapshot)
+        commit('setLoading', false)
+        commit('unRegisterUserFromMeetup', payload)
+      })
+      .catch(error => {
+        commit('setLoading', false)
+        console.error(error)
+      })
   }
 }

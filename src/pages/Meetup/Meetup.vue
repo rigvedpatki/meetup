@@ -18,11 +18,18 @@
           <v-img :src="`${meetup.imageUrl}`" height="400px"></v-img>
           <v-card-text>
             <div class="info--text">{{ meetup.date | date}} -- {{meetup.location}}</div>
+            <div>
+              <edit-meetup-date-dialog :meetup="meetup" v-if="userIsCreator"></edit-meetup-date-dialog>
+              <edit-meetup-time-dialog :meetup="meetup" v-if="userIsCreator"></edit-meetup-time-dialog>
+            </div>
             <div>{{meetup.description}}</div>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions v-if="!userIsCreator">
             <v-spacer></v-spacer>
-            <v-btn class="primary">Register</v-btn>
+            <register-meetup-dialog
+              :meetupId="meetup.id"
+              v-if="userIsAuthenticated && !userIsCreator"
+            ></register-meetup-dialog>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -31,12 +38,18 @@
 </template>
 <script>
 import EditMeetupDetailsDialog from '@/components/EditMeetup/EditMeetupDetailsDialog.vue'
+import EditMeetupDateDialog from '@/components/EditMeetup/EditMeetupDateDialog.vue'
+import EditMeetupTimeDialog from '@/components/EditMeetup/EditMeetupTimeDialog.vue'
+import RegisterMeetupDialog from '@/components/RegisterMeetup/RegisterMeetupDialog.vue'
 
 import { mapGetters } from 'vuex'
 export default {
   name: 'MeetupPage',
   components: {
-    'edit-meetup-details-dialog': EditMeetupDetailsDialog
+    'edit-meetup-details-dialog': EditMeetupDetailsDialog,
+    'edit-meetup-date-dialog': EditMeetupDateDialog,
+    'edit-meetup-time-dialog': EditMeetupTimeDialog,
+    'register-meetup-dialog': RegisterMeetupDialog
   },
   computed: {
     meetup() {

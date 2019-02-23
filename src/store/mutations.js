@@ -36,5 +36,23 @@ export default {
       ...payload
     }
     state.loadedMeetups.splice(meetupIndex, 1, updatedMeetup)
+  },
+  registerUserForMeetup(state, payload) {
+    const id = payload.id
+    if (
+      state.user.registeredMeetups.findIndex(meetupId => meetupId === id) >= 0
+    ) {
+      return
+    }
+    state.user.registeredMeetups.push(id)
+    state.user.fbKeys[id] = payload.fbKey
+  },
+  unRegisterUserFromMeetup(state, payload) {
+    const registeredMeetups = state.user.registeredMeetups
+    registeredMeetups.splice(
+      registeredMeetups.findIndex(meetupId => meetupId === payload.id),
+      1
+    )
+    Reflect.deleteProperty(state.user.fbKeys, payload)
   }
 }
