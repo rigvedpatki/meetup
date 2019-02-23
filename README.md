@@ -1,6 +1,6 @@
 # Meetup Web Application
 
-Organize and sign up for meetups.
+Organize and sign up for meetups. The link to the application is [here](https://meetup-web-app.firebaseapp.com/)
 
 > This projeect is build using the tutorial by Max from [Academind](https://www.academind.com).
 
