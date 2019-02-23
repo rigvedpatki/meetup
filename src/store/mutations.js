@@ -22,5 +22,19 @@ export default {
   // Sets loadedMeetups
   setLoadedMeetups(state, payload) {
     state.loadedMeetups = payload
+  },
+  // Update Meetup
+  updateMeetup(state, payload) {
+    const meetupIndex = state.loadedMeetups.findIndex(
+      meetup => meetup.id === payload.id
+    )
+    const currentMeetup = state.loadedMeetups.find(
+      meetup => meetup.id === payload.id
+    )
+    const updatedMeetup = {
+      ...currentMeetup,
+      ...payload
+    }
+    state.loadedMeetups.splice(meetupIndex, 1, updatedMeetup)
   }
 }

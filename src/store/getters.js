@@ -12,12 +12,18 @@ export default {
   // Return single loadedMeetup
   loadedMeetup(state) {
     return meetupId => {
-      return state.loadedMeetups.find(meetup => meetup.id === meetupId)
+      return state.loadedMeetups.find(meetup => {
+        return meetup.id === meetupId
+      })
     }
   },
   // Returns user's state
   user(state) {
     return state.user
+  },
+  // user is authenicated
+  userIsAuthenticated(state) {
+    return state.user !== null && state.user !== undefined
   },
   // Returns error
   error(state) {

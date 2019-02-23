@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'App',
   data() {
@@ -47,6 +48,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      userIsAuthenticated: 'userIsAuthenticated'
+    }),
     menuItems() {
       let menuItems = [
         {
@@ -81,12 +85,6 @@ export default {
       }
 
       return menuItems
-    },
-    userIsAuthenticated() {
-      return (
-        this.$store.getters.user !== null &&
-        this.$store.getters.user !== undefined
-      )
     }
   },
   methods: {

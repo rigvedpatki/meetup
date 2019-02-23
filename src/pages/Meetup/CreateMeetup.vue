@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-layout row v-if="error">
+      <v-flex xs12 sm6 offset-sm3>
+        <app-alert alertType="error" @dismissed="onDismissed">{{error.message}}</app-alert>
+      </v-flex>
+    </v-layout>
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <div class="display-1">Create a new Meetup</div>
@@ -32,13 +37,16 @@
           </v-layout>
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-              <v-text-field
-                name="imageUrl"
-                label="Image URL"
-                id="imageUrl"
-                :rules="[rules.required]"
-                v-model="imageUrl"
-              ></v-text-field>
+              <v-btn raised color="primary" @click="onPickFile">
+                <v-icon left>cloud_upload</v-icon>Upload Image
+              </v-btn>
+              <input
+                type="file"
+                style="display: none"
+                ref="fileInput"
+                accept="image/*"
+                @change="onFilePicked"
+              >
             </v-flex>
           </v-layout>
           <v-layout row class="pb-2">
@@ -115,6 +123,7 @@
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'CreateMeetupPage',
   data() {
@@ -130,16 +139,20 @@ export default {
       imageUrl: '',
       description: '',
       date: new Date().toISOString().substr(0, 10),
-      time: `${new Date().getHours()}:${new Date().getMinutes()}`
+      time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+      image: null
     }
   },
   computed: {
+    ...mapGetters({
+      error: 'error'
+    }),
     formIsValid() {
       return (
         this.title !== '' &&
         this.location !== '' &&
-        this.imageUrl !== '' &&
-        this.description !== ''
+        this.description !== '' &&
+        this.image !== null
       )
     },
     submittableDateTime() {
@@ -159,15 +172,21 @@ export default {
   methods: {
     createMeetup(event) {
       event.preventDefault()
+      if (!this.image) {
+        let error = {
+          message: 'Please upload an image file.'
+        }
+        this.$store.dispatch('setError', error)
+        return
+      }
       if (this.formIsValid) {
         const meetup = {
           title: this.title,
           location: this.location,
-          imageUrl: this.imageUrl,
+          image: this.image,
           description: this.description,
           date: this.submittableDateTime
         }
-        console.log(meetup)
         this.$store.dispatch('createMeetup', meetup)
 
         this.$router.push('/meetups')
@@ -177,6 +196,30 @@ export default {
       if (!date) return null
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
+    },
+    onPickFile() {
+      this.$refs.fileInput.click()
+    },
+    onFilePicked(event) {
+      const files = event.target.files
+      console.log(files)
+      let fileName = files[0].name
+      if (fileName.lastIndexOf('.') <= 0) {
+        let error = {
+          message: 'Please upload a vaild image file.'
+        }
+        this.$store.dispatch('setError', error)
+        return
+      }
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+        this.imageUrl = fileReader.result
+      })
+      fileReader.readAsDataURL(files[0])
+      this.image = files[0]
+    },
+    onDismissed() {
+      this.$store.dispatch('clearError')
     }
   },
   watch: {
