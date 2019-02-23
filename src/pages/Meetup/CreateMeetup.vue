@@ -43,7 +43,54 @@
           </v-layout>
           <v-layout row class="pb-2">
             <v-flex xs12 sm6 offset-sm3>
-              <v-img :src="`${imageUrl}`" height="300px"></v-img>
+              <v-img :src="`${imageUrl}`" height="300px" v-show="imageUrl !== ''"></v-img>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-menu
+                v-model="dateMenu"
+                :close-on-content-click="false"
+                lazy
+                transition="scale-transition"
+                full-width
+                min-width="290px"
+              >
+                <v-text-field
+                  slot="activator"
+                  v-model="dateFormatted"
+                  label="Choose a date"
+                  prepend-icon="event"
+                ></v-text-field>
+                <v-date-picker
+                  v-model="date"
+                  @input="dateMenu = false "
+                  :min="new Date().toISOString().substr(0, 10)"
+                ></v-date-picker>
+              </v-menu>
+            </v-flex>
+          </v-layout>
+          <v-layout row class="mb-2">
+            <v-flex xs12 sm6 offset-sm3>
+              <v-menu
+                ref="menu"
+                v-model="timeMenu"
+                :close-on-content-click="false"
+                :return-value.sync="time"
+                lazy
+                transition="scale-transition"
+                full-width
+                min-width="290px"
+              >
+                <v-text-field
+                  slot="activator"
+                  v-model="time"
+                  label="Choose the time"
+                  prepend-icon="access_time"
+                ></v-text-field>
+                <v-time-picker v-model="time" format="24hr" @click:minute="$refs.menu.save(time)"></v-time-picker>
+              </v-menu>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -57,23 +104,6 @@
               ></v-textarea>
             </v-flex>
           </v-layout>
-          <v-layout row class="mb-2">
-            <v-flex xs12 sm6 offset-sm3>
-              <div class="subheading">Choose Date and Time</div>
-            </v-flex>
-          </v-layout>
-          <v-layout row class="mb-2">
-            <v-flex xs12 sm6 offset-sm3>
-              <v-date-picker v-model="date" :min="new Date().toISOString().substr(0, 10)"></v-date-picker>
-            </v-flex>
-          </v-layout>
-
-          <v-layout row class="mb-2">
-            <v-flex xs12 sm6 offset-sm3>
-              <v-time-picker v-model="time" format="24hr"></v-time-picker>
-            </v-flex>
-          </v-layout>
-
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
               <v-btn class="primary" :disabled="!formIsValid" type="submit">Create Meetup</v-btn>
@@ -89,6 +119,9 @@ export default {
   name: 'CreateMeetupPage',
   data() {
     return {
+      dateMenu: false,
+      timeMenu: false,
+      dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
       rules: {
         required: value => !!value || 'Required.'
       },
@@ -139,6 +172,16 @@ export default {
 
         this.$router.push('/meetups')
       }
+    },
+    formatDate(date) {
+      if (!date) return null
+      const [year, month, day] = date.split('-')
+      return `${day}/${month}/${year}`
+    }
+  },
+  watch: {
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date)
     }
   }
 }
