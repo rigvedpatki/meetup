@@ -174,8 +174,12 @@ export default {
         }
 
         commit('setUser', updatedUser)
+        commit('setLoading', false)
       })
-      .catch(error => console.error(error))
+      .catch(error => {
+        console.error(error)
+        commit('setLoading', false)
+      })
   },
   // Logout from firebase
   logout({ commit }) {
@@ -213,20 +217,11 @@ export default {
     }
     const fbKey = user.fbKeys[payload]
 
-    console.log(
-      'fbKey',
-      fbKey,
-      '\npayload',
-      payload,
-      '\npath',
-      `/users/${user.id}/registrations/${fbKey}`
-    )
     firebase
       .database()
       .ref(`/users/${user.id}/registrations/${fbKey}`)
       .remove()
       .then(snapshot => {
-        console.log('snapshot', snapshot)
         commit('setLoading', false)
         commit('unRegisterUserFromMeetup', payload)
       })
