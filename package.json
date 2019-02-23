@@ -1,6 +1,14 @@
 {
   "name": "meetup",
   "version": "0.1.0",
+  "description": "Meetup Web Application.",
+  "author": "Rigved Patki <rigved.patki@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rigvedpatki/meetup.git"
+  },
+  "homepage": "https://github.com/rigvedpatki/meetup#readme",
+  "license": "gpl-3.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

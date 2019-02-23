@@ -9,6 +9,7 @@ import SignUp from '../pages/User/SignUp.vue'
 
 import authGaurd from './auth-gaurd'
 
+// List of routes for Vue router
 export const routes = [
   {
     path: '/',

@@ -3,6 +3,7 @@ import 'firebase/auth'
 import 'firebase/database'
 
 export default {
+  // Initial meetups loaded
   loadMeetups({ commit }) {
     commit('setLoading', true)
     firebase
@@ -28,7 +29,7 @@ export default {
       })
       .catch(error => console.error(error))
   },
-
+  // Creating a new meetup
   createMeetup({ commit, getters }, payload) {
     const meetup = {
       title: payload.title,
@@ -52,6 +53,7 @@ export default {
         console.error(error)
       })
   },
+  // SignUp a new user
   signUserUp({ commit }, payload) {
     commit('setLoading', true)
     commit('clearError')
@@ -72,6 +74,7 @@ export default {
         console.error(error)
       })
   },
+  // User sign in
   signUserIn({ commit }, payload) {
     commit('setLoading', true)
     commit('clearError')
@@ -93,12 +96,15 @@ export default {
         console.error(error)
       })
   },
+  // Clearing state of error
   clearError({ commit }) {
     commit('clearError')
   },
+  // Auto sign in
   autoSignIn({ commit }, payload) {
     commit('setUser', { id: payload.uid, registeredMeetups: [] })
   },
+  // Logout from firebase
   logout({ commit }) {
     firebase.auth().signOut()
     commit('setUser', null)

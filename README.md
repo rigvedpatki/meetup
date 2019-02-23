@@ -20,6 +20,8 @@ Organize and sign up for meetups.
 
 ## Firebase Backend:
 
+> The configuration for firebase is present in `firebase.config.js` which is included in `.gitignore`
+
 - Realtime Database for storing the meetup details.
 - Image storage in the firebase storage.
 - Authentication using Firebase Authentication
